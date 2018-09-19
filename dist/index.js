@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Timer from 'react-timer-mixin';
 
-const HALF_RAD = Math.PI/2
+const HALF_RAD = Math.PI/2;
 
 export default class AnimateNumber extends Component {
 
@@ -24,7 +24,8 @@ export default class AnimateNumber extends Component {
     timing : 'linear' | 'easeOut' | 'easeIn' | () => number,
     formatter : () => {},
     onProgress : () => {},
-    onFinish : () => {}
+    onFinish : () => {},
+    start: ?boolean
   };
 
   static defaultProps = {
@@ -33,7 +34,8 @@ export default class AnimateNumber extends Component {
     steps : 45,
     value : 0,
     formatter : (val) => val,
-    onFinish : () => {}
+    onFinish : () => {},
+    start: true
   };
 
   static TimingFunctions = {
@@ -79,29 +81,39 @@ export default class AnimateNumber extends Component {
     this.state = {
       value : 0,
       displayValue : 0
-    }
+    };
     this.dirty = false;
     this.startFrom = 0;
     this.endWith = 0;
   }
 
   componentDidMount() {
-    this.startFrom = this.state.value
-    this.endWith = this.props.value
-    this.dirty = true
-    this.startAnimate()
+    this.startFrom = this.state.value;
+    this.endWith = this.props.value;
+    this.dirty = true;
+    if (this.props.start) {
+      this.startAnimate();
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
 
     // check if start an animation
     if(this.props.value !== nextProps.value) {
-      this.startFrom = this.props.value
-      this.endWith = nextProps.value
-      this.dirty = true
-      this.startAnimate()
+      this.startFrom = this.props.value;
+      this.endWith = nextProps.value;
+      this.dirty = true;
+      if (nextProps.start && !this.props.start) {
+        this.startAnimate();
+      }
       return
     }
+
+    if (nextProps.start && !this.props.start) {
+        this.dirty = true;
+        this.startAnimate();
+    }
+
     // Check if iterate animation frame
     if(!this.dirty) {
       return
