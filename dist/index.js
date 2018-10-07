@@ -103,9 +103,7 @@ export default class AnimateNumber extends Component {
       this.startFrom = this.props.value;
       this.endWith = nextProps.value;
       this.dirty = true;
-      if (nextProps.start && !this.props.start) {
-        this.startAnimate();
-      }
+      this.startAnimate();
       return
     }
 
